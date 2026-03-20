@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnapSell - 發布流程 UX 比較</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; }
+
+  .container {
+    display: flex;
+    gap: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  h1 { text-align: center; padding: 20px; color: #333; font-size: 20px; }
+
+  .phone {
+    width: 375px;
+    min-height: 700px;
+    background: #FFF8F0;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    border: 8px solid #222;
+    position: relative;
+  }
+
+  .phone-header {
+    background: rgba(255,248,240,0.95);
+    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    color: #333;
+    position: sticky;
+    top: 0;
+  }
+
+  .label {
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .label-old { color: #e53e3e; }
+  .label-new { color: #38a169; }
+
+  .phone-content {
+    padding: 16px;
+    min-height: 500px;
+  }
+
+  .phone-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    background: rgba(255,248,240,0.95);
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+  }
+
+  /* Old design styles */
+  .old-group-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+  }
+
+  .old-group-card.checked {
+    border-color: #38a169;
+    background: #f0fff4;
+  }
+
+  .old-group-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .old-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid #cbd5e0;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .old-checkbox.checked {
+    background: #38a169;
+    border-color: #38a169;
+    color: white;
+    font-size: 14px;
+  }
+
+  .old-group-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .old-group-meta {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  .old-group-warn {
+    font-size: 11px;
+    color: #e53e3e;
+    margin-top: 2px;
+  }
+
+  .old-btn-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .old-btn-copy {
+    flex: 1;
+    height: 36px;
+    border-radius: 20px;
+    border: 1.5px solid #FF6B35;
+    background: white;
+    color: #FF6B35;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .old-btn-open {
+    flex: 1;
+    height: 36px;
+    border-radius: 20px;
+    border: none;
+    background: #4299e1;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* New design styles */
+  .new-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .new-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .new-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF6B35, #FF8F5E);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .new-progress-text {
+    font-size: 12px;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  /* Completed groups (small) */
+  .new-done-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f0fff4;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border: 1px solid #c6f6d5;
+  }
+
+  .new-done-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #38a169;
+    color: white;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .new-done-name {
+    font-size: 13px;
+    color: #38a169;
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .new-done-time {
+    font-size: 11px;
+    color: #a0aec0;
+  }
+
+  /* Current group (hero card) */
+  .new-current-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 20px rgba(255,107,53,0.12);
+    border: 2px solid #FF6B35;
+    animation: slideUp 0.4s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .new-current-label {
+    font-size: 11px;
+    color: #FF6B35;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .new-current-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+  }
+
+  .new-current-meta {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  .new-current-warn {
+    font-size: 12px;
+    color: #e53e3e;
+    margin-bottom: 16px;
+  }
+
+  .new-big-btn {
+    width: 100%;
+    height: 52px;
+    border-radius: 26px;
+    border: none;
+    background: linear-gradient(135deg, #FF6B35, #FF8F5E);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+    transition: transform 0.15s;
+  }
+
+  .new-big-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* Pending groups (minimal) */
+  .new-pending-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f7fafc;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .new-pending-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #a0aec0;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .new-pending-name {
+    font-size: 13px;
+    color: #a0aec0;
+    font-weight: 500;
+  }
+
+  .new-skip-btn {
+    display: block;
+    margin: 12px auto 0;
+    background: none;
+    border: none;
+    color: #a0aec0;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* Bottom buttons */
+  .btn-prev {
+    flex: 1;
+    height: 44px;
+    border-radius: 22px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #666;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-save {
+    flex: 1;
+    height: 44px;
+    border-radius: 22px;
+    border: none;
+    background: linear-gradient(135deg, #FF6B35, #FF8F5E);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Annotation arrows */
+  .annotation {
+    position: absolute;
+    background: #1a1a2e;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 10;
+    max-width: 180px;
+    line-height: 1.4;
+  }
+
+  .section-title {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+  }
+
+  /* Comparison table */
+  .compare-table {
+    max-width: 700px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  .compare-table h2 {
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: #333;
+  }
+
+  .compare-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .compare-table th, .compare-table td {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .compare-table th {
+    color: #888;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .red { color: #e53e3e; }
+  .green { color: #38a169; }
+</style>
+</head>
+<body>
+
+<h1>SnapSell 發布流程 - 現行 vs 提案比較</h1>
+
+<div class="container">
+
+  <!-- OLD DESIGN -->
+  <div>
+    <div class="label label-old">現行設計：全部列出，逐一操作</div>
+    <div class="phone">
+      <div class="phone-header">新增商品 - 步驟 4</div>
+      <div class="phone-content">
+        <p class="section-title">推薦以下社團發布，依成員數排序：</p>
+
+        <div class="old-group-card checked">
+          <div class="old-group-header">
+            <div class="old-checkbox checked">✓</div>
+            <div>
+              <div class="old-group-name">球鞋交易中！二社</div>
+              <div class="old-group-meta">24.5 萬成員 · 私密 · 台北/新北</div>
+              <div class="old-group-warn">需先加入社團才能發文</div>
+            </div>
+          </div>
+          <div class="old-btn-row">
+            <button class="old-btn-copy">複製文案</button>
+            <button class="old-btn-open">開啟社團</button>
+          </div>
+        </div>
+
+        <div class="old-group-card checked">
+          <div class="old-group-header">
+            <div class="old-checkbox checked">✓</div>
+            <div>
+              <div class="old-group-name">大台中最便宜跳蚤市場</div>
+              <div class="old-group-meta">12.2 萬成員 · 公開 · 台中</div>
+            </div>
+          </div>
+          <div class="old-btn-row">
+            <button class="old-btn-copy">複製文案</button>
+            <button class="old-btn-open">開啟社團</button>
+          </div>
+        </div>
+
+        <div class="old-group-card">
+          <div class="old-group-header">
+            <div class="old-checkbox"></div>
+            <div>
+              <div class="old-group-name">台灣最大二手買賣交流平台</div>
+              <div class="old-group-meta">4.4 萬成員 · 公開 · 全台</div>
+            </div>
+          </div>
+          <div class="old-btn-row">
+            <button class="old-btn-copy">複製文案</button>
+            <button class="old-btn-open">開啟社團</button>
+          </div>
+        </div>
+
+        <div class="old-group-card">
+          <div class="old-group-header">
+            <div class="old-checkbox"></div>
+            <div>
+              <div class="old-group-name">運動用品交易交流區</div>
+              <div class="old-group-meta">4.3 萬成員 · 公開 · 全台</div>
+            </div>
+          </div>
+          <div class="old-btn-row">
+            <button class="old-btn-copy">複製文案</button>
+            <button class="old-btn-open">開啟社團</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone-bottom">
+        <button class="btn-prev">上一步</button>
+        <button class="btn-save">儲存完成</button>
+      </div>
+    </div>
+    <div style="padding: 16px; max-width: 375px;">
+      <p style="font-size: 13px; color: #e53e3e; line-height: 1.6;">
+        <strong>問題：</strong><br>
+        每個社團需要 4 個動作：<br>
+        ① 勾選 → ② 複製文案 → ③ 開啟社團 → ④ 回來<br>
+        <strong>5 個社團 = 20 次操作</strong><br>
+        用戶容易忘記哪個已發、哪個沒發
+      </p>
+    </div>
+  </div>
+
+  <!-- NEW DESIGN -->
+  <div>
+    <div class="label label-new">提案設計：逐一引導，一鍵發布</div>
+    <div class="phone" id="newPhone">
+      <div class="phone-header">新增商品 - 發布</div>
+      <div class="phone-content" id="newContent">
+
+        <!-- Progress bar -->
+        <div class="new-progress">
+          <div class="new-progress-bar">
+            <div class="new-progress-fill" id="progressFill" style="width: 40%"></div>
+          </div>
+          <div class="new-progress-text" id="progressText">2 / 5 已發布</div>
+        </div>
+
+        <!-- Completed groups -->
+        <div id="doneGroups">
+          <div class="new-done-group">
+            <div class="new-done-check">✓</div>
+            <div class="new-done-name">球鞋交易中！二社</div>
+            <div class="new-done-time">剛剛</div>
+          </div>
+
+          <div class="new-done-group">
+            <div class="new-done-check">✓</div>
+            <div class="new-done-name">大台中最便宜跳蚤市場</div>
+            <div class="new-done-time">1 分鐘前</div>
+          </div>
+        </div>
+
+        <!-- Current group (hero) -->
+        <div class="new-current-card" id="currentCard">
+          <div class="new-current-label">下一個社團</div>
+          <div class="new-current-name" id="currentName">台灣最大二手買賣交流平台</div>
+          <div class="new-current-meta" id="currentMeta">4.4 萬成員 · 公開 · 全台</div>
+
+          <button class="new-big-btn" id="publishBtn" onclick="simulatePublish()">
+            <span>📋</span> 複製文案並開啟社團
+          </button>
+
+          <button class="new-skip-btn" onclick="simulateSkip()">跳過此社團</button>
+        </div>
+
+        <!-- Pending groups -->
+        <div id="pendingGroups">
+          <div class="new-pending-group">
+            <div class="new-pending-dot">4</div>
+            <div class="new-pending-name">運動用品交易交流區</div>
+          </div>
+
+          <div class="new-pending-group">
+            <div class="new-pending-dot">5</div>
+            <div class="new-pending-name">二手球鞋交流中</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="phone-bottom">
+        <button class="btn-prev">上一步</button>
+        <button class="btn-save" id="saveBtn">發布完成，儲存</button>
+      </div>
+    </div>
+    <div style="padding: 16px; max-width: 375px;">
+      <p style="font-size: 13px; color: #38a169; line-height: 1.6;">
+        <strong>改善：</strong><br>
+        每個社團只需要 1 個動作：<br>
+        ① 點「複製文案並開啟社團」→ 自動複製 + 跳轉 FB<br>
+        <strong>5 個社團 = 5 次操作</strong><br>
+        進度條清楚顯示發布進度，不會搞混
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Comparison table -->
+<div class="compare-table">
+  <h2>操作次數比較（發布 5 個社團）</h2>
+  <table>
+    <tr>
+      <th>動作</th>
+      <th>現行設計</th>
+      <th>提案設計</th>
+    </tr>
+    <tr>
+      <td>勾選社團</td>
+      <td class="red">5 次</td>
+      <td class="green">0 次（依序引導）</td>
+    </tr>
+    <tr>
+      <td>複製文案</td>
+      <td class="red">5 次（每次手動點）</td>
+      <td class="green">0 次（自動複製）</td>
+    </tr>
+    <tr>
+      <td>開啟社團</td>
+      <td class="red">5 次（另一個按鈕）</td>
+      <td class="green">合併在上面（同一按鈕）</td>
+    </tr>
+    <tr>
+      <td>主要點擊</td>
+      <td class="red">15 次 + 切換 app</td>
+      <td class="green"><strong>5 次</strong> + 切換 app</td>
+    </tr>
+    <tr>
+      <td>認知負擔</td>
+      <td class="red">要記住哪個發了哪個沒發</td>
+      <td class="green">進度條 + 已完成列表，一目了然</td>
+    </tr>
+  </table>
+</div>
+
+<script>
+// Interactive demo for the new design
+let publishCount = 2;
+const groups = [
+  { name: '台灣最大二手買賣交流平台', meta: '4.4 萬成員 · 公開 · 全台' },
+  { name: '運動用品交易交流區', meta: '4.3 萬成員 · 公開 · 全台' },
+  { name: '二手球鞋交流中', meta: '3.2 萬成員 · 私密 · 全台' },
+];
+let currentIndex = 0;
+
+function simulatePublish() {
+  const btn = document.getElementById('publishBtn');
+  btn.innerHTML = '<span>✓</span> 已複製！正在開啟社團...';
+  btn.style.background = '#38a169';
+
+  setTimeout(() => {
+    publishCount++;
+    currentIndex++;
+    updateUI();
+  }, 1200);
+}
+
+function simulateSkip() {
+  currentIndex++;
+  updateUI();
+}
+
+function updateUI() {
+  const progress = ((publishCount) / 5 * 100);
+  document.getElementById('progressFill').style.width = progress + '%';
+  document.getElementById('progressText').textContent = publishCount + ' / 5 已發布';
+
+  // Add to done list
+  if (currentIndex <= groups.length && currentIndex > 0) {
+    const prevGroup = groups[currentIndex - 1];
+    const doneDiv = document.getElementById('doneGroups');
+    const newDone = document.createElement('div');
+    newDone.className = 'new-done-group';
+    newDone.style.animation = 'slideUp 0.3s ease';
+    newDone.innerHTML = `
+      <div class="new-done-check">✓</div>
+      <div class="new-done-name">${prevGroup.name}</div>
+      <div class="new-done-time">剛剛</div>
+    `;
+    doneDiv.appendChild(newDone);
+  }
+
+  // Update current card
+  if (currentIndex < groups.length) {
+    const group = groups[currentIndex];
+    document.getElementById('currentName').textContent = group.name;
+    document.getElementById('currentMeta').textContent = group.meta;
+    const btn = document.getElementById('publishBtn');
+    btn.innerHTML = '<span>📋</span> 複製文案並開啟社團';
+    btn.style.background = 'linear-gradient(135deg, #FF6B35, #FF8F5E)';
+
+    // Update current card animation
+    const card = document.getElementById('currentCard');
+    card.style.animation = 'none';
+    card.offsetHeight; // trigger reflow
+    card.style.animation = 'slideUp 0.4s ease';
+
+    // Remove first pending group
+    const pending = document.getElementById('pendingGroups');
+    if (pending.firstElementChild) {
+      pending.removeChild(pending.firstElementChild);
+    }
+  } else {
+    // All done!
+    const card = document.getElementById('currentCard');
+    card.innerHTML = `
+      <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
+        <div style="font-size: 16px; font-weight: 700; color: #333; margin-bottom: 4px;">全部發布完成！</div>
+        <div style="font-size: 13px; color: #888;">已發布到 ${publishCount} 個社團</div>
+      </div>
+    `;
+    card.style.borderColor = '#38a169';
+    card.style.animation = 'slideUp 0.4s ease';
+
+    document.getElementById('saveBtn').style.background = '#38a169';
+    document.getElementById('saveBtn').textContent = '✓ 儲存完成';
+  }
+}
+</script>
+
+</body>
+</html>
