@@ -30,6 +30,8 @@ export interface FBGroup {
   categories: Category[];
   url: string;
   notes?: string;
+  activityScore?: number;
+  activityReason?: string;
 }
 
 export interface PriceSource {

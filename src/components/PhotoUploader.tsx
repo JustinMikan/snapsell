@@ -26,7 +26,7 @@ function compressViaObjectURL(file: File): Promise<string> {
       URL.revokeObjectURL(url);
       try {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
+        const MAX_WIDTH = 1800;
         let width = img.width;
         let height = img.height;
         if (width > MAX_WIDTH) {
@@ -38,7 +38,7 @@ function compressViaObjectURL(file: File): Promise<string> {
         const ctx = canvas.getContext('2d');
         if (!ctx) { reject(new Error('No canvas ctx')); return; }
         ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.82));
+        resolve(canvas.toDataURL('image/jpeg', 0.92));
       } catch (err) {
         reject(err);
       }
@@ -62,7 +62,7 @@ function compressViaFileReader(file: File): Promise<string> {
       img.onload = () => {
         try {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1200;
+          const MAX_WIDTH = 1800;
           let width = img.width;
           let height = img.height;
           if (width > MAX_WIDTH) {
@@ -74,7 +74,7 @@ function compressViaFileReader(file: File): Promise<string> {
           const ctx = canvas.getContext('2d');
           if (!ctx) { reject(new Error('No canvas ctx')); return; }
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.82));
+          resolve(canvas.toDataURL('image/jpeg', 0.92));
         } catch (err) {
           reject(err);
         }

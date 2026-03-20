@@ -10,7 +10,7 @@ interface CopyPreviewProps {
 
 export default function CopyPreview({ copy, onCopyChange, compact }: CopyPreviewProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [toast, setToast] = useState(false);
 
   const handleCopy = async () => {

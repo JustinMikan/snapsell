@@ -50,6 +50,7 @@ export default function NewListingPage() {
   const [generatedCopy, setGeneratedCopy] = useState('');
   const [recommendedGroups, setRecommendedGroups] = useState<FBGroup[]>([]);
   const [publishedGroups, setPublishedGroups] = useState<string[]>([]);
+  const [groupsEvaluating, setGroupsEvaluating] = useState(false);
 
   // P0-1: Saved trade preferences
   const [savedTradeMethod, setSavedTradeMethod] = useState<TradeMethod | undefined>();
@@ -135,7 +136,7 @@ export default function NewListingPage() {
     }
   }, [photos, fetchPriceResearch]);
 
-  // Auto-generate copy when confirmedData changes (for inline preview in step 2)
+  // Auto-generate copy + background group evaluation when confirmedData changes
   useEffect(() => {
     if (confirmedData) {
       const copy = generateCopy({
@@ -148,6 +149,37 @@ export default function NewListingPage() {
         notes: confirmedData.notes,
       });
       setGeneratedCopy(copy);
+
+      // Background: recommend groups + evaluate activity
+      const groups = recommendGroups(confirmedData.category, confirmedData.tradeLocation);
+      setRecommendedGroups(groups);
+      setGroupsEvaluating(true);
+
+      fetch('/api/evaluate-groups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          groups: groups.map(g => ({ id: g.id, name: g.name, members: g.members, membersDisplay: g.membersDisplay })),
+        }),
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data?.evaluations) {
+            const scoreMap = new Map<string, { score: number; reason: string }>();
+            for (const ev of data.evaluations) {
+              scoreMap.set(ev.groupId, { score: ev.activityScore, reason: ev.reason });
+            }
+            const enriched = groups.map(g => ({
+              ...g,
+              activityScore: scoreMap.get(g.id)?.score ?? 3,
+              activityReason: scoreMap.get(g.id)?.reason ?? '',
+            }));
+            enriched.sort((a, b) => (b.activityScore ?? 3) - (a.activityScore ?? 3));
+            setRecommendedGroups(enriched);
+          }
+        })
+        .catch(() => { /* keep original groups if evaluation fails */ })
+        .finally(() => setGroupsEvaluating(false));
     }
   }, [confirmedData]);
 
@@ -207,7 +239,7 @@ export default function NewListingPage() {
         return;
       }
 
-      // Generate copy + recommend groups for step 3
+      // Generate copy for step 3 (groups already evaluated in background)
       const copy = generateCopy({
         name: data.name,
         brand: data.brand,
@@ -218,8 +250,12 @@ export default function NewListingPage() {
         notes: data.notes,
       });
       setGeneratedCopy(copy);
-      const groups = recommendGroups(data.category, data.tradeLocation);
-      setRecommendedGroups(groups);
+
+      // If groups haven't been set yet (manual form), set them now
+      if (recommendedGroups.length === 0) {
+        const groups = recommendGroups(data.category, data.tradeLocation);
+        setRecommendedGroups(groups);
+      }
     }
 
     setStep((s) => Math.min(s + 1, 3));
@@ -298,16 +334,30 @@ export default function NewListingPage() {
 
       {/* Content with step animation */}
       <main className="flex-1 px-4 pb-28">
-        <div key={step} className="animate-fade-in-up">
+        <div className="animate-fade-in-up">
 
           {/* ===== STEP 1: Upload Photos ===== */}
           {step === 1 && (
-            <PhotoUploader photos={photos} onChange={setPhotos} />
+            <>
+              <div className="mb-4 text-center">
+                <h2 className="text-lg font-bold text-gray-800 mb-1">拍幾張照片就好</h2>
+                <p className="text-xs text-gray-500">AI 會自動辨識品牌型號、幫你查價、寫好文案</p>
+              </div>
+              <PhotoUploader photos={photos} onChange={setPhotos} />
+            </>
           )}
 
           {/* ===== STEP 2: Product Info (AI + Price + Trade + Copy Preview) ===== */}
           {step === 2 && (
             <>
+              {/* Onboarding context */}
+              {analyzeState === 'done' && (
+                <div className="mb-3 text-center">
+                  <h2 className="text-lg font-bold text-gray-800 mb-1">AI 幫你搞定了</h2>
+                  <p className="text-xs text-gray-500">確認資訊無誤，文案已自動生成，直接下一步就能發布</p>
+                </div>
+              )}
+
               {/* P1-2: Photo thumbnails */}
               {photos.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto pb-3 mb-3 -mx-1 px-1">
@@ -413,6 +463,12 @@ export default function NewListingPage() {
           {/* ===== STEP 3: Publish (was step 4) ===== */}
           {step === 3 && (
             <>
+              {/* Onboarding context */}
+              <div className="mb-3 text-center">
+                <h2 className="text-lg font-bold text-gray-800 mb-1">選社團，一鍵發布</h2>
+                <p className="text-xs text-gray-500">AI 按活躍度排序，點擊就能複製文案並開啟社團</p>
+              </div>
+
               {/* P1-2: Photo thumbnails */}
               {photos.length > 0 && (
                 <div className="flex gap-2 overflow-x-auto pb-3 mb-3 -mx-1 px-1">
@@ -427,11 +483,19 @@ export default function NewListingPage() {
                 </div>
               )}
 
+              {/* Copy preview at top of publish step */}
+              {generatedCopy && (
+                <div className="mb-4">
+                  <CopyPreview copy={generatedCopy} onCopyChange={setGeneratedCopy} compact />
+                </div>
+              )}
+
               <PublishChecklist
                 groups={recommendedGroups}
                 copy={generatedCopy}
                 publishedGroups={publishedGroups}
                 onPublishGroup={handlePublishGroup}
+                evaluating={groupsEvaluating}
               />
             </>
           )}
