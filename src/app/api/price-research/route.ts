@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     userMessage += '\n\n請搜尋新品價格和二手市場行情，然後回傳 JSON 格式的定價建議。';
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2048,
       system: SYSTEM_PROMPT,
       tools: [

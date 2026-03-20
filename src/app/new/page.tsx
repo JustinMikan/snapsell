@@ -67,6 +67,39 @@ export default function NewListingPage() {
     } catch { /* ignore */ }
   }, []);
 
+  // Trigger group evaluation (background)
+  const fetchGroupEvaluation = useCallback((category: Category, tradeLocation?: string) => {
+    const groups = recommendGroups(category, tradeLocation);
+    setRecommendedGroups(groups);
+    setGroupsEvaluating(true);
+
+    fetch('/api/evaluate-groups', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        groups: groups.map(g => ({ id: g.id, name: g.name, members: g.members, membersDisplay: g.membersDisplay })),
+      }),
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data?.evaluations) {
+          const scoreMap = new Map<string, { score: number; reason: string }>();
+          for (const ev of data.evaluations) {
+            scoreMap.set(ev.groupId, { score: ev.activityScore, reason: ev.reason });
+          }
+          const enriched = groups.map(g => ({
+            ...g,
+            activityScore: scoreMap.get(g.id)?.score ?? 3,
+            activityReason: scoreMap.get(g.id)?.reason ?? '',
+          }));
+          enriched.sort((a, b) => (b.activityScore ?? 3) - (a.activityScore ?? 3));
+          setRecommendedGroups(enriched);
+        }
+      })
+      .catch(() => { /* keep original groups if evaluation fails */ })
+      .finally(() => setGroupsEvaluating(false));
+  }, []);
+
   // Trigger price research with enhanced params
   const fetchPriceResearch = useCallback(async (name: string, brand: string, condition: string, notes?: string[], aiEstimate?: number) => {
     setPriceResearchState('loading');
@@ -127,16 +160,17 @@ export default function NewListingPage() {
       setAiResult(result);
       setAnalyzeState('done');
 
-      // Auto-trigger price research with notes + aiEstimate
+      // Parallel: trigger price research + group evaluation at the same time
       fetchPriceResearch(result.name, result.brand, result.condition, result.notes, result.suggestedPrice);
+      fetchGroupEvaluation(result.category, savedTradeLocation);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'AI 辨識失敗';
       setAnalyzeError(message);
       setAnalyzeState('error');
     }
-  }, [photos, fetchPriceResearch]);
+  }, [photos, fetchPriceResearch, fetchGroupEvaluation, savedTradeLocation]);
 
-  // Auto-generate copy + background group evaluation when confirmedData changes
+  // Auto-generate copy when confirmedData changes; re-evaluate groups if category/location changed
   useEffect(() => {
     if (confirmedData) {
       const copy = generateCopy({
@@ -150,38 +184,12 @@ export default function NewListingPage() {
       });
       setGeneratedCopy(copy);
 
-      // Background: recommend groups + evaluate activity
-      const groups = recommendGroups(confirmedData.category, confirmedData.tradeLocation);
-      setRecommendedGroups(groups);
-      setGroupsEvaluating(true);
-
-      fetch('/api/evaluate-groups', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          groups: groups.map(g => ({ id: g.id, name: g.name, members: g.members, membersDisplay: g.membersDisplay })),
-        }),
-      })
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-          if (data?.evaluations) {
-            const scoreMap = new Map<string, { score: number; reason: string }>();
-            for (const ev of data.evaluations) {
-              scoreMap.set(ev.groupId, { score: ev.activityScore, reason: ev.reason });
-            }
-            const enriched = groups.map(g => ({
-              ...g,
-              activityScore: scoreMap.get(g.id)?.score ?? 3,
-              activityReason: scoreMap.get(g.id)?.reason ?? '',
-            }));
-            enriched.sort((a, b) => (b.activityScore ?? 3) - (a.activityScore ?? 3));
-            setRecommendedGroups(enriched);
-          }
-        })
-        .catch(() => { /* keep original groups if evaluation fails */ })
-        .finally(() => setGroupsEvaluating(false));
+      // Re-evaluate groups if user changed category or location from AI defaults
+      if (aiResult && (confirmedData.category !== aiResult.category || confirmedData.tradeLocation !== savedTradeLocation)) {
+        fetchGroupEvaluation(confirmedData.category, confirmedData.tradeLocation);
+      }
     }
-  }, [confirmedData]);
+  }, [confirmedData, aiResult, savedTradeLocation, fetchGroupEvaluation]);
 
   const canProceed = useCallback(() => {
     switch (step) {
