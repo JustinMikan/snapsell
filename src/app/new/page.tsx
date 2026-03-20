@@ -68,8 +68,8 @@ export default function NewListingPage() {
   }, []);
 
   // Trigger group evaluation (background)
-  const fetchGroupEvaluation = useCallback((category: Category, tradeLocation?: string) => {
-    const groups = recommendGroups(category, tradeLocation);
+  const fetchGroupEvaluation = useCallback((category: Category, name?: string, brand?: string, tradeLocation?: string) => {
+    const groups = recommendGroups({ category, name, brand, location: tradeLocation });
     setRecommendedGroups(groups);
     setGroupsEvaluating(true);
 
@@ -162,7 +162,7 @@ export default function NewListingPage() {
 
       // Parallel: trigger price research + group evaluation at the same time
       fetchPriceResearch(result.name, result.brand, result.condition, result.notes, result.suggestedPrice);
-      fetchGroupEvaluation(result.category, savedTradeLocation);
+      fetchGroupEvaluation(result.category, result.name, result.brand, savedTradeLocation);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'AI 辨識失敗';
       setAnalyzeError(message);
@@ -186,7 +186,7 @@ export default function NewListingPage() {
 
       // Re-evaluate groups if user changed category or location from AI defaults
       if (aiResult && (confirmedData.category !== aiResult.category || confirmedData.tradeLocation !== savedTradeLocation)) {
-        fetchGroupEvaluation(confirmedData.category, confirmedData.tradeLocation);
+        fetchGroupEvaluation(confirmedData.category, confirmedData.name, confirmedData.brand, confirmedData.tradeLocation);
       }
     }
   }, [confirmedData, aiResult, savedTradeLocation, fetchGroupEvaluation]);
@@ -261,7 +261,7 @@ export default function NewListingPage() {
 
       // If groups haven't been set yet (manual form), set them now
       if (recommendedGroups.length === 0) {
-        const groups = recommendGroups(data.category, data.tradeLocation);
+        const groups = recommendGroups({ category: data.category, name: data.name, brand: data.brand, location: data.tradeLocation });
         setRecommendedGroups(groups);
       }
     }

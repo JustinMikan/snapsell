@@ -10,6 +10,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['3C'],
+    tags: ['電腦', '零件', '顯卡', '主機板', 'cpu', 'gpu', '記憶體', '螢幕', '鍵盤', '滑鼠'],
     url: 'https://www.facebook.com/groups/694880387379853/',
   },
   {
@@ -20,6 +21,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['3C'],
+    tags: ['手機', 'iphone', 'samsung', 'pixel', 'oppo', '平板', 'ipad', 'apple'],
     url: 'https://www.facebook.com/groups/freephonechang/',
   },
   {
@@ -30,6 +32,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['3C'],
+    tags: ['ps4', 'ps5', 'switch', 'playstation', 'nintendo', '遊戲', '遊戲主機', 'sony', '手把'],
     url: 'https://www.facebook.com/groups/ps4culb/',
   },
   {
@@ -40,6 +43,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['3C'],
+    tags: ['3c', '電子', '耳機', '音響', '相機', '鏡頭'],
     url: 'https://www.facebook.com/groups/good3c/',
   },
   {
@@ -50,6 +54,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '全台',
     categories: ['3C'],
+    tags: ['ps4', 'ps5', 'playstation', '遊戲', '遊戲片', '手把', '周邊'],
     url: 'https://www.facebook.com/groups/1470450689938540/',
   },
 
@@ -62,6 +67,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '台北/新北',
     categories: ['家電', '傢俱'],
+    tags: ['傢俱', '家電', '沙發', '床', '桌', '椅', '冰箱', '洗衣機', '電視'],
     url: 'https://www.facebook.com/groups/275453166143119/',
   },
   {
@@ -72,6 +78,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '台北',
     categories: ['家電', '傢俱'],
+    tags: ['家電', '餐飲設備', '傢俱', '冷氣', '烤箱', '微波爐', '咖啡機'],
     url: 'https://www.facebook.com/groups/292747624405496/',
   },
   {
@@ -82,6 +89,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '高雄',
     categories: ['家電', '傢俱'],
+    tags: ['家電', '冰箱', '洗衣機', '冷氣', '電視', '吸塵器', '除濕機'],
     url: 'https://www.facebook.com/groups/1562864890697552/',
   },
   {
@@ -92,6 +100,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '台中',
     categories: ['家電', '傢俱'],
+    tags: ['家電', '傢俱', '冰箱', '洗衣機', '沙發', '床'],
     url: 'https://www.facebook.com/groups/325674521149880/',
   },
   {
@@ -102,6 +111,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '桃園',
     categories: ['家電', '傢俱'],
+    tags: ['傢俱', '家電', '沙發', '床', '桌', '椅', '冰箱'],
     url: 'https://www.facebook.com/groups/1047312972021427/',
   },
 
@@ -114,6 +124,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '全台',
     categories: ['衣物', '精品'],
+    tags: ['精品', '名牌', 'lv', 'gucci', 'chanel', 'prada', 'hermes', '包包', '手錶'],
     url: 'https://www.facebook.com/groups/350247875424530/',
   },
   {
@@ -124,6 +135,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['衣物', '精品'],
+    tags: ['衣服', '鞋子', '包包', '保養品', '化妝品', '飾品'],
     url: 'https://www.facebook.com/groups/608855781097334/',
   },
   {
@@ -134,6 +146,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '全台',
     categories: ['衣物', '精品'],
+    tags: ['女裝', '洋裝', '上衣', '褲子', '外套', '衣服'],
     url: 'https://www.facebook.com/groups/276336277417643/',
   },
   {
@@ -144,6 +157,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '台北',
     categories: ['衣物', '精品'],
+    tags: ['選物', '設計師', '質感', '衣服', '飾品', '包包'],
     url: 'https://www.facebook.com/groups/1781974772060967/',
   },
   {
@@ -154,6 +168,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['衣物', '精品'],
+    tags: ['精品', '名牌包', 'lv', 'chanel', 'hermes', 'dior', '包包'],
     url: 'https://www.facebook.com/groups/843480442394136/',
   },
 
@@ -166,6 +181,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '台北/新北',
     categories: ['鞋子'],
+    tags: ['球鞋', 'nike', 'jordan', 'adidas', 'new balance', 'yeezy', '運動鞋'],
     url: 'https://www.facebook.com/groups/562461880805013/',
   },
   {
@@ -176,6 +192,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '台中',
     categories: ['鞋子'],
+    tags: ['鞋子', '球鞋', 'nike', 'adidas', '休閒鞋', '運動鞋'],
     url: 'https://www.facebook.com/groups/464039063764117/',
   },
   {
@@ -186,6 +203,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['鞋子'],
+    tags: ['運動', '球鞋', '球拍', '健身', '瑜珈', '自行車'],
     url: 'https://www.facebook.com/groups/787336411400360/',
   },
   {
@@ -196,6 +214,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '全台',
     categories: ['鞋子'],
+    tags: ['球鞋', 'nike', 'jordan', 'adidas', 'converse', 'vans'],
     url: 'https://www.facebook.com/groups/933591273427110/',
   },
   {
@@ -206,6 +225,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['鞋子'],
+    tags: ['球鞋', 'nike', 'jordan', 'adidas', 'puma'],
     url: 'https://www.facebook.com/groups/405051589674556/',
   },
   {
@@ -216,6 +236,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '全台',
     categories: ['鞋子'],
+    tags: ['跑鞋', '跑步', 'asics', 'brooks', 'hoka', 'nike', '馬拉松'],
     url: 'https://www.facebook.com/groups/683604842392606/',
   },
 
@@ -228,6 +249,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['嬰幼兒'],
+    tags: ['母嬰', '嬰兒', '奶瓶', '尿布', '玩具', '童裝', '媽媽'],
     url: 'https://www.facebook.com/groups/mummymummy/',
   },
   {
@@ -238,6 +260,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['嬰幼兒'],
+    tags: ['恩典牌', '母嬰', '嬰兒', '兒童', '兒童床', '推車', '玩具', '童書'],
     url: 'https://www.facebook.com/groups/1488783628240461/',
   },
   {
@@ -248,6 +271,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['嬰幼兒'],
+    tags: ['母嬰', '媽媽', '嬰兒', '兒童', '童裝', '推車', '安全座椅'],
     url: 'https://www.facebook.com/groups/4442252429198791/',
   },
   {
@@ -258,6 +282,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['嬰幼兒'],
+    tags: ['婦幼', '母嬰', '嬰兒', '兒童', '奶瓶', '副食品'],
     url: 'https://www.facebook.com/groups/gomabb/',
   },
   {
@@ -268,6 +293,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '全台',
     categories: ['嬰幼兒'],
+    tags: ['圍欄', '推車', '汽座', '安全座椅', '嬰兒床', '兒童床', 'combi', 'aprica'],
     url: 'https://www.facebook.com/groups/320572354204564/',
   },
 
@@ -280,6 +306,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['露營'],
+    tags: ['露營', '帳篷', '睡袋', '天幕', '營燈', 'snow peak', 'coleman', '戶外'],
     url: 'https://www.facebook.com/groups/236038316592953/',
   },
   {
@@ -290,6 +317,7 @@ export const fbGroups: FBGroup[] = [
     type: '私密',
     region: '台北',
     categories: ['露營'],
+    tags: ['登山', '戶外', '背包', '登山鞋', 'gore-tex', '攀岩', 'the north face', 'arc\'teryx'],
     url: 'https://www.facebook.com/groups/advangear/',
   },
   {
@@ -300,6 +328,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['露營'],
+    tags: ['露營', '帳篷', '爐具', '炊具', '冰桶', '折疊桌', '露營椅'],
     url: 'https://www.facebook.com/groups/589224611117936/',
   },
   {
@@ -310,6 +339,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['露營'],
+    tags: ['露營拖車', '拖車', '露營車', '車頂帳'],
     url: 'https://www.facebook.com/groups/631030187069950/',
   },
   {
@@ -320,6 +350,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['露營'],
+    tags: ['登山', '露營', '以物易物', '交換', '帳篷', '睡袋'],
     url: 'https://www.facebook.com/groups/764446303691272/',
   },
 
@@ -332,6 +363,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '新竹',
     categories: ['綜合'],
+    tags: ['二手', '跳蚤', '新竹'],
     url: 'https://www.facebook.com/groups/107793636088378/',
   },
   {
@@ -342,6 +374,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '台中',
     categories: ['綜合'],
+    tags: ['二手', '跳蚤', '台中'],
     url: 'https://www.facebook.com/groups/1631646100401047/',
   },
   {
@@ -352,6 +385,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '全台',
     categories: ['綜合'],
+    tags: ['二手', '全新', '買賣'],
     url: 'https://www.facebook.com/groups/1674453666199238/',
   },
   {
@@ -362,6 +396,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '台中',
     categories: ['綜合'],
+    tags: ['二手', '台中', '買賣'],
     url: 'https://www.facebook.com/groups/917081174985368/',
   },
   {
@@ -372,6 +407,7 @@ export const fbGroups: FBGroup[] = [
     type: '公開',
     region: '台南/高雄',
     categories: ['綜合'],
+    tags: ['二手', '台南', '高雄', '買賣'],
     url: 'https://www.facebook.com/groups/1516425841998183/',
   },
 ];

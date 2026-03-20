@@ -28,6 +28,7 @@ export interface FBGroup {
   type: '公開' | '私密';
   region: string;
   categories: Category[];
+  tags?: string[];
   url: string;
   notes?: string;
   activityScore?: number;
