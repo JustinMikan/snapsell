@@ -33,6 +33,25 @@ export default function PublishChecklist({
   const publishedCount = publishedGroups.length;
   const progress = totalGroups > 0 ? (publishedCount / totalGroups) * 100 : 0;
 
+  const openGroup = useCallback((group: FBGroup) => {
+    const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      // Facebook App deep link: fb://group/{groupId}
+      const appUrl = `fb://group/${group.id}`;
+      const webUrl = group.url;
+      const start = Date.now();
+      window.location.href = appUrl;
+      // Fallback to web if app didn't open within 500ms
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.open(webUrl, '_blank');
+        }
+      }, 500);
+    } else {
+      window.open(group.url, '_blank');
+    }
+  }, []);
+
   const handlePublish = useCallback(async (group: FBGroup) => {
     // Copy to clipboard
     try {
@@ -48,10 +67,10 @@ export default function PublishChecklist({
 
     setCopiedId(group.id);
     onPublishGroup(group.id);
-    window.open(group.url, '_blank');
+    openGroup(group);
 
     setTimeout(() => setCopiedId(null), 2000);
-  }, [copy, onPublishGroup]);
+  }, [copy, onPublishGroup, openGroup]);
 
   return (
     <div className="space-y-3 animate-fade-in-up">

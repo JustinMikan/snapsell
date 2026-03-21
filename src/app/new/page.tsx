@@ -52,6 +52,11 @@ export default function NewListingPage() {
   const [publishedGroups, setPublishedGroups] = useState<string[]>([]);
   const [groupsEvaluating, setGroupsEvaluating] = useState(false);
 
+  // Progress tracking for UX
+  const [recognitionDone, setRecognitionDone] = useState(false);
+  const [pricingDone, setPricingDone] = useState(false);
+  const [evaluationDone, setEvaluationDone] = useState(false);
+
   // P0-1: Saved trade preferences
   const [savedTradeMethod, setSavedTradeMethod] = useState<TradeMethod | undefined>();
   const [savedTradeLocation, setSavedTradeLocation] = useState<string | undefined>();
@@ -73,12 +78,16 @@ export default function NewListingPage() {
     setRecommendedGroups(groups);
     setGroupsEvaluating(true);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
     fetch('/api/evaluate-groups', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         groups: groups.map(g => ({ id: g.id, name: g.name, members: g.members, membersDisplay: g.membersDisplay })),
       }),
+      signal: controller.signal,
     })
       .then(res => res.ok ? res.json() : null)
       .then(data => {
@@ -96,19 +105,26 @@ export default function NewListingPage() {
           setRecommendedGroups(enriched);
         }
       })
-      .catch(() => { /* keep original groups if evaluation fails */ })
-      .finally(() => setGroupsEvaluating(false));
+      .catch(() => { /* keep original groups if evaluation fails or times out */ })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        setGroupsEvaluating(false);
+        setEvaluationDone(true);
+      });
   }, []);
 
   // Trigger price research with enhanced params
   const fetchPriceResearch = useCallback(async (name: string, brand: string, condition: string, notes?: string[], aiEstimate?: number) => {
     setPriceResearchState('loading');
     setPriceResearchError('');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
     try {
       const res = await fetch('/api/price-research', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, brand, condition, notes, aiEstimate }),
+        signal: controller.signal,
       });
       if (!res.ok) {
         const err = await res.json();
@@ -117,10 +133,15 @@ export default function NewListingPage() {
       const data = await res.json();
       setPriceResearch(data);
       setPriceResearchState('done');
+      setPricingDone(true);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '查價失敗';
+      const isTimeout = err instanceof DOMException && err.name === 'AbortError';
+      const message = isTimeout ? '查價逾時，建議自行定價' : (err instanceof Error ? err.message : '查價失敗');
       setPriceResearchError(message);
       setPriceResearchState('error');
+      setPricingDone(true);
+    } finally {
+      clearTimeout(timeoutId);
     }
   }, []);
 
@@ -129,6 +150,9 @@ export default function NewListingPage() {
     if (photos.length === 0) return;
     setAnalyzeState('analyzing');
     setAnalyzeError('');
+    setRecognitionDone(false);
+    setPricingDone(false);
+    setEvaluationDone(false);
 
     try {
       const res = await fetch('/api/analyze', {
@@ -159,6 +183,7 @@ export default function NewListingPage() {
 
       setAiResult(result);
       setAnalyzeState('done');
+      setRecognitionDone(true);
 
       // Parallel: trigger price research + group evaluation at the same time
       fetchPriceResearch(result.name, result.brand, result.condition, result.notes, result.suggestedPrice);
@@ -383,9 +408,32 @@ export default function NewListingPage() {
               {/* AI analyzing — skeleton card */}
               {analyzeState === 'analyzing' && (
                 <div className="space-y-4 animate-fade-in-up">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-[#FF6B35]/30 animate-pulse-glow" />
-                    <span className="text-sm font-semibold text-gray-700">🤖 AI 辨識中...</span>
+                  {/* Step-by-step progress */}
+                  <div className="bg-white rounded-xl card-shadow p-4 space-y-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-[#FF6B35]/30 animate-pulse-glow" />
+                      <span className="text-sm font-semibold text-gray-700">AI 處理中</span>
+                    </div>
+                    <div className="space-y-1.5 ml-1">
+                      <div className="flex items-center gap-2 text-xs">
+                        <span>{recognitionDone ? '✅' : '⏳'}</span>
+                        <span className={recognitionDone ? 'text-gray-500' : 'text-gray-700 font-medium'}>
+                          {recognitionDone ? '圖片辨識完成' : '正在辨識圖片...'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span>{pricingDone ? '✅' : recognitionDone ? '⏳' : '⬜'}</span>
+                        <span className={pricingDone ? 'text-gray-500' : recognitionDone ? 'text-gray-700 font-medium' : 'text-gray-300'}>
+                          {pricingDone ? '市場查價完成' : recognitionDone ? '正在查詢市場行情...' : '查詢市場行情'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span>{evaluationDone ? '✅' : recognitionDone ? '⏳' : '⬜'}</span>
+                        <span className={evaluationDone ? 'text-gray-500' : recognitionDone ? 'text-gray-700 font-medium' : 'text-gray-300'}>
+                          {evaluationDone ? '社團評估完成' : recognitionDone ? '正在評估推薦社團...' : '評估推薦社團'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   {/* Skeleton card */}
                   <div className="bg-white rounded-xl overflow-hidden card-shadow">
@@ -398,11 +446,6 @@ export default function NewListingPage() {
                       <div className="h-3 rounded-full animate-shimmer w-5/6" />
                       <div className="h-3 rounded-full animate-shimmer w-4/6" />
                     </div>
-                  </div>
-                  <div className="bg-white rounded-xl card-shadow p-4 space-y-3">
-                    <div className="h-4 rounded-full animate-shimmer w-1/3" />
-                    <div className="h-8 rounded-full animate-shimmer w-full" />
-                    <div className="h-10 rounded-xl animate-shimmer w-full" />
                   </div>
                 </div>
               )}
