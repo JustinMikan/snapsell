@@ -79,7 +79,7 @@ export default function NewListingPage() {
     setGroupsEvaluating(true);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
 
     fetch('/api/evaluate-groups', {
       method: 'POST',
@@ -118,7 +118,7 @@ export default function NewListingPage() {
     setPriceResearchState('loading');
     setPriceResearchError('');
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
     try {
       const res = await fetch('/api/price-research', {
         method: 'POST',
